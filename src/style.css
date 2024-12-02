@@ -1,0 +1,112 @@
+* {
+  padding: 0;
+  margin: 0;
+  border: none;
+  outline: none;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+.oswald,
+* {
+  font-family: "Oswald", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 350;
+  font-style: normal;
+}
+
+body {
+  min-height: 100vh;
+  width: 100%;
+  background-color: #eee;
+}
+
+.active-ok {
+  background-color: lightblue;
+}
+
+.active-no {
+  background-color: red;
+}
+
+.active-no svg *:not(rect) {
+  fill: #fff;
+}
+
+video,
+img {
+  width: 100%;
+  height: 100%;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+svg {
+  height: 24px;
+}
+
+.main__card {
+  width: 50%;
+  min-height: 300px;
+  background-color: #fff;
+  border-radius: 4px;
+  padding-inline: 1rem;
+  padding-block: 0;
+}
+
+.choose-stream-type {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  padding: 1rem .5rem;
+}
+
+.controls {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.controls button {
+  height: 35px;
+  width: 35px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.video-zone {
+  height: 365px;
+  width: 100%;
+  background-color: lightblue;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.video-zone .message {
+  display: none;
+}
+
+.video-zone:not(:has(video)) {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 1rem;
+}
+
+.video-zone:not(:has(video)) .message {
+  display: block;
+}
