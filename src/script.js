@@ -89,6 +89,7 @@ function displayFeed(stream) {
   const elt = document.createElement("video");
   elt.muted = true;
   elt.controls = true;
+  elt.autoplay = true;
 
   if (!stream) {
     throw new Error("No video stream available !");
