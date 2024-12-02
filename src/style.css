@@ -70,7 +70,7 @@ svg {
   align-items: center;
   justify-content: flex-start;
   gap: 1rem;
-  padding: 1rem .5rem;
+  padding: 1rem 0.5rem;
 }
 
 .controls {
@@ -109,4 +109,26 @@ svg {
 
 .video-zone:not(:has(video)) .message {
   display: block;
+}
+
+/* MEDIA QUERIES */
+
+@media only all and (max-width: 1000px) {
+  .main__card {
+    width: 80%;
+  }
+}
+
+@media only all and (max-width: 490px) {
+  .main__card {
+    width: 95%;
+  }
+
+  .video-zone {
+    height: 200px;
+  }
+
+  .video-zone:has(video) {
+    background-color: transparent;
+  }
 }

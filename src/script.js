@@ -35,7 +35,13 @@ startBtn.addEventListener("click", async (e) => {
 
     // Display the feed as the user is recording
     const videoElement = displayFeed(stream);
-    videoZone.appendChild(videoElement);
+    videoZone.appendChild(videoElement.elt);
+
+    // Adjust the size of the video container
+    // videoZone.style.width = `${videoElement.width}px`;
+    // videoZone.style.height = `${videoElement.height}px`;
+
+    console.log(videoElement);
   } catch (e) {
     displayError(messageInFeedZone, e.message);
   }
@@ -90,5 +96,5 @@ function displayFeed(stream) {
 
   elt.srcObject = stream;
 
-  return elt;
+  return { elt, width: elt.clientWidth, height: elt.clientHeight };
 }
