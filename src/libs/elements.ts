@@ -9,8 +9,8 @@ export const toggleMicBtn = document.getElementById("mic");
 export const toggleVideoBtn = document.getElementById("video");
 export const startBtn = document.getElementById("start");
 export const togglePauseResumeBtn = document.getElementById("pause-resume");
-export const cloudBtn = document.getElementById("cloud");
-export const chooseMainTypeContainer = document.querySelector(
+export const cancelBtn = document.getElementById("cancel");
+export const chooseStreamTypeContainer = document.querySelector(
   ".choose-stream-type"
 );
 export const messageInFeedZone = document.querySelector(".video-zone .message");
