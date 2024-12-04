@@ -6,7 +6,7 @@ connection.addPlugin(WorkerInjector);
 
 let version = 2;
 
-export const localDatabase = await connection.initDb({
+connection.initDb({
   name: "cordy",
   tables: [
     {
