@@ -16,4 +16,6 @@ export const chooseStreamTypeContainer = document.querySelector(
 export const messageInFeedZone = document.querySelector(".video-zone .message");
 export const videoZone = document.querySelector(".video-zone");
 
-export const selectUserStreamType = document.getElementById("user-stream")
+export const selectUserStreamType = document.getElementById("user-stream");
+
+export const listVideos = document.getElementById("list__videos");

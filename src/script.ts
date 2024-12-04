@@ -1,14 +1,39 @@
-import { StreamType } from "./libs/@types";
+"use strict";
+
+import {
+  CordyReturnDataType,
+  LocalDbVideoType,
+  StreamType,
+} from "./libs/@types";
 import Cordy from "./libs/api";
 import {
   cancelBtn,
   chooseStreamTypeContainer,
+  listVideos,
   messageInFeedZone,
+  pauseIcon,
+  resumeIcon,
   selectUserStreamType,
   startBtn,
+  togglePauseResumeBtn,
   videoZone,
 } from "./libs/elements";
-import { createVideo, notify } from "./libs/utils";
+import connection from "./libs/localDb.setup";
+import {
+  createVideo,
+  createVideoCard,
+  displayAllCloudVideos,
+  displayAllLocalVideos,
+  getVideoAndDeleteCloud,
+  getVideoAndDeleteLocal,
+  getVideoAndUpload,
+  notify,
+} from "./libs/utils";
+
+// ************************ AS SOON AS WE LOAD THE PAGE, GET AND DISPLAY THE VIDEOS *********
+displayAllLocalVideos();
+displayAllCloudVideos();
+// ********************************************************************************************
 
 let streamType: StreamType = selectUserStreamType?.getAttribute(
   "data-streamType"
@@ -24,9 +49,59 @@ chooseStreamTypeContainer?.addEventListener("change", function (e) {
   }
 });
 
-const recorder = new Cordy();
+const recorder = new Cordy({
+  handleStop: handleRecordingStopped,
+});
 
-startBtn?.addEventListener("click", function () {
+startBtn?.addEventListener("click", async function () {
+  if (!recorder.recording) {
+    record();
+  } else {
+    const data = await recorder.stop({
+      filename: `${Date.now()}.vid`,
+      type: "webm",
+    });
+    handleRecordingStopped(data);
+  }
+});
+
+cancelBtn?.addEventListener("click", function () {
+  recorder
+    .cancel()
+    .then(() => {
+      document.getElementById("feed")?.remove();
+      startBtn?.classList.remove("active-ok");
+    })
+    .catch(() => {});
+});
+
+togglePauseResumeBtn?.addEventListener("click", function () {
+  if (recorder.recorder?.state === "recording") {
+    recorder.pause({
+      handlePause() {
+        if (togglePauseResumeBtn) {
+          togglePauseResumeBtn.innerHTML = resumeIcon;
+          (document.getElementById("feed") as HTMLVideoElement)?.pause();
+        }
+
+        return true;
+      },
+    });
+  } else if (recorder.recorder?.state === "paused") {
+    recorder.resume({
+      handleResume() {
+        if (togglePauseResumeBtn) {
+          togglePauseResumeBtn.innerHTML = pauseIcon;
+          (document.getElementById("feed") as HTMLVideoElement)?.play();
+        }
+
+        return true;
+      },
+    });
+  }
+});
+
+function record() {
   recorder
     .init({
       streamType: streamType,
@@ -42,6 +117,11 @@ startBtn?.addEventListener("click", function () {
         video.srcObject = stream;
 
         videoZone?.appendChild(video);
+      },
+      options: {
+        handleError() {
+          notify(messageInFeedZone!, "An error occurred !");
+        },
       },
     })
     .then(() => {
@@ -59,14 +139,73 @@ startBtn?.addEventListener("click", function () {
         }
       }
     });
-});
+}
 
-cancelBtn?.addEventListener("click", function () {
-  recorder
-    .cancel()
-    .then(() => {
-      document.getElementById("feed")?.remove();
-      startBtn?.classList.remove("active-ok");
-    })
-    .catch(() => {});
+async function handleRecordingStopped(data: CordyReturnDataType | undefined) {
+  if (!data) {
+    // Do something
+    return;
+  }
+
+  startBtn?.classList.remove("active-ok");
+  document.getElementById("feed")?.remove();
+
+  // Store the video in local database first
+  const storedVideo = (await connection.insert({
+    into: "videos",
+    values: [data],
+    return: true,
+  })) as unknown as LocalDbVideoType[];
+
+  const videoCard = createVideoCard({
+    name: data!.file.name,
+    src: data!.url,
+    id: storedVideo[0].id,
+    date: storedVideo[0].date,
+    size: data!.file.size,
+  });
+
+  listVideos?.insertAdjacentElement("afterbegin", videoCard);
+}
+
+listVideos?.addEventListener("click", async (e) => {
+  const element = e.target as HTMLElement;
+
+  let target;
+
+  // For uploading the video
+  if (element.matches("button.upload")) {
+    target = element;
+  } else {
+    target = element.closest("button.upload");
+  }
+  {
+    getVideoAndUpload(target!);
+  }
+
+  // For deleting a video
+  if (element.matches("button.delete")) {
+    target = element;
+  } else {
+    target = element.closest("button.delete");
+  }
+  {
+    let id = target?.id;
+
+    // LOCAL VIDEO
+    if (id?.includes("local")) {
+      getVideoAndDeleteLocal(target!, {
+        successCb(id) {
+          document.getElementById(`video-${id}`)?.remove();
+        },
+        errorCb(e) {
+          console.log(e);
+        },
+      });
+    }
+    // CLOUD VIDEO
+    else if (id?.includes("cloud")) {
+      getVideoAndDeleteCloud(target!);
+    }
+  }
 });
