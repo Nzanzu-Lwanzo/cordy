@@ -47,3 +47,14 @@ export interface VideoFnParams {
   successCb: (id: number) => void;
   errorCb: (e: Error) => void;
 }
+
+export interface UploadVideoResponseType {
+  url: string;
+  date: string;
+  name: string;
+  type: string;
+  width: number;
+  height: number;
+  public_id: string;
+  size: number;
+}

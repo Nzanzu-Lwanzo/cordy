@@ -57,6 +57,51 @@ svg {
   height: 24px;
 }
 
+:root {
+  --spiner-border-width: 2px;
+  --spiner-dims: 20px;
+  --spinner-track-color: lightblue;
+  --spinner-ring-color: #32373b;
+}
+
+.loader {
+  border: var(--spiner-border-width) solid var(--spinner-ring-color);
+  border-top: var(--spiner-border-width) solid var(--spinner-track-color);
+  border-radius: 50%;
+  width: var(--spiner-dims);
+  height: var(--spiner-dims);
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+.with-loader {
+  background-color: #f7fafb !important;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+/* ******************************** ELEMENTE STYLING ********************************** */
+
 .main__card,
 #list__videos {
   width: 50%;
@@ -86,11 +131,25 @@ svg {
   gap: 1rem;
 }
 
-.controls button {
+.controls .button {
   height: 35px;
   width: 35px;
   border-radius: 50%;
   cursor: pointer;
+  background-color: transparent;
+  transition: 0.3s ease-out;
+}
+
+.controls .button:not(#start):hover {
+  background-color: #32373b;
+
+  svg *:not(rect) {
+    fill: #fff;
+  }
+}
+
+.controls .button#start:hover {
+  background-color: lightblue;
 }
 
 .video-zone {
@@ -131,9 +190,9 @@ svg {
   video {
     height: 180px;
   }
-  
+
   span {
-    font-size: .8rem;
+    font-size: 0.8rem;
   }
 
   .top,
@@ -142,7 +201,6 @@ svg {
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    
   }
 
   .top {
@@ -159,7 +217,7 @@ svg {
       gap: 0.5rem;
     }
 
-    button {
+    .button {
       height: 25px;
       width: 25px;
       border-radius: 50%;
@@ -172,7 +230,7 @@ svg {
     }
   }
 
-  .infos  {
+  .infos {
     width: 100%;
   }
 

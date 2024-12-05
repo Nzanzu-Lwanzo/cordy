@@ -12,6 +12,10 @@ class Cordy {
   handlers: CordyType["handlers"];
   feedConsumer: HTMLVideoElement | null;
   recording: boolean;
+
+  // PRIVATE PROPERTIES
+  private camera: "user" | "environment" = "environment";
+  private initParams: InitMethodParamsType | null = null;
   // private recordMaxSize: number = 1024 * 1024;
 
   constructor(handlers?: CordyType["handlers"]) {
@@ -23,13 +27,12 @@ class Cordy {
     this.recording = false;
   }
 
-  async init({
-    streamType,
-    constraints,
-    consumer,
-    recorderOptions,
-    options,
-  }: InitMethodParamsType) {
+  async init(initParams: InitMethodParamsType) {
+    const { streamType, constraints, consumer, recorderOptions, options } =
+      initParams;
+
+    this.initParams = initParams;
+
     switch (streamType) {
       case "user": {
         this.stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -163,6 +166,24 @@ class Cordy {
       return data;
     } else {
       return undefined;
+    }
+  }
+
+  toggleCamera() {
+    if (this.initParams) {
+      this.init({
+        ...this.initParams,
+        constraints: {
+          audio: this.initParams.constraints.audio,
+          video: {
+            facingMode: this.camera,
+
+            // What if we have more video constraints ?
+          },
+        },
+      });
+
+      this.camera = this.camera === "environment" ? "user" : "environment";
     }
   }
 

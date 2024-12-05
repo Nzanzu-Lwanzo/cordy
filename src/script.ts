@@ -15,20 +15,20 @@ import {
   resumeIcon,
   selectUserStreamType,
   startBtn,
+  toggleCameraBtn,
   togglePauseResumeBtn,
   videoZone,
 } from "./libs/elements";
 import connection from "./libs/localDb.setup";
+import { notify } from "./libs/utils";
+
+import { createVideo, createVideoCard } from "./libs/dom";
+import { displayAllCloudVideos, displayAllLocalVideos } from "./libs/dom";
 import {
-  createVideo,
-  createVideoCard,
-  displayAllCloudVideos,
-  displayAllLocalVideos,
   getVideoAndDeleteCloud,
   getVideoAndDeleteLocal,
   getVideoAndUpload,
-  notify,
-} from "./libs/utils";
+} from "./libs/manageVideos";
 
 // ************************ AS SOON AS WE LOAD THE PAGE, GET AND DISPLAY THE VIDEOS *********
 displayAllLocalVideos();
@@ -163,6 +163,7 @@ async function handleRecordingStopped(data: CordyReturnDataType | undefined) {
     id: storedVideo[0].id,
     date: storedVideo[0].date,
     size: data!.file.size,
+    videoType: "local",
   });
 
   listVideos?.insertAdjacentElement("afterbegin", videoCard);
@@ -190,10 +191,10 @@ listVideos?.addEventListener("click", async (e) => {
     target = element.closest("button.delete");
   }
   {
-    let id = target?.id;
+    let videoType = target?.getAttribute("data-videoType") as "local" | "cloud";
 
     // LOCAL VIDEO
-    if (id?.includes("local")) {
+    if (videoType && videoType === "local") {
       getVideoAndDeleteLocal(target!, {
         successCb(id) {
           document.getElementById(`video-${id}`)?.remove();
@@ -204,8 +205,14 @@ listVideos?.addEventListener("click", async (e) => {
       });
     }
     // CLOUD VIDEO
-    else if (id?.includes("cloud")) {
+    else if (videoType && videoType === "cloud") {
       getVideoAndDeleteCloud(target!);
     }
   }
+});
+
+toggleCameraBtn?.addEventListener("click", function () {
+  try {
+    recorder.toggleCamera();
+  } catch (e) {}
 });
