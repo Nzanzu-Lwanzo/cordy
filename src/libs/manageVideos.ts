@@ -26,7 +26,13 @@ export async function getVideoAndUpload(target: Element) {
       uploadVideo({
         file: video[0].file,
         url: document.location.origin.concat("/video"),
-        errorCb() {},
+        errorCb(res) {
+          if (res instanceof Error) {
+            alert(res.message);
+          } else {
+            console.log(res);
+          }
+        },
         successCb(video) {
           // Delete this video from local db
           connection

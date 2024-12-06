@@ -12,7 +12,7 @@ export async function uploadVideo({
   file: File;
   url: string;
   successCb: (data: UploadVideoResponseType) => void;
-  errorCb: (e?: Error) => void;
+  errorCb: (res: Error | Response) => void;
   element: HTMLElement | Element;
 }) {
   if (file) {
@@ -42,7 +42,7 @@ export async function uploadVideo({
           const data = await response.json();
           successCb(data);
         } else {
-          errorCb();
+          errorCb(response);
         }
       })
       .catch((e) => {
@@ -82,7 +82,7 @@ export async function deleteCloudVideo({
 }: {
   url: string;
   successCb: () => void;
-  errorCb: (e?: Error) => void;
+  errorCb: (res: Error | Response) => void;
   element: HTMLElement | Element;
 }) {
   // Feedback - loader
@@ -101,7 +101,7 @@ export async function deleteCloudVideo({
       if (response.status === 204) {
         successCb();
       } else {
-        errorCb();
+        errorCb(response);
       }
     })
     .catch((e) => {

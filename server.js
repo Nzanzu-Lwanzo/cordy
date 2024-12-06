@@ -69,7 +69,7 @@ App.get("/video/:id", async (req, res) => {
       },
       (error, result) => {
         if (error) {
-          throw new Error("ERROR_FETCHING_VIDEOS");
+          return res.sendStatus(500);
         }
 
         const data = result.resources.map((video) => {
