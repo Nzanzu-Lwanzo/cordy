@@ -31,4 +31,8 @@ The red circle will turn **lightgreen** and the _upload_ button will be replaced
 
 I wrote an API around the web MediaStream and MediaRecorder apis to make the app work as it does. If you need the code, visit [this file]("C:\Users\USER\Desktop\codebase\cordy\src\libs\api.ts").
 
-#### This code is open source. You can use it however you want
+## Gotchas
+
+As the app is hosted by Netlify, videos can not be uploaded to a server because Netlify is, apparently, serverless. And when I tried to host on Render (a Web Service) I got an error because of the blobs. They were not valid ( see issues ). So the solutions are either to directly send the blobs to the server withour first storing them into a local database, and store them in cloudinary to get a URL that's securely accessible (this solution applies for Render) or create server functions (this solution applies for Netlify).
+
+#### This code is open source. You can use it however you want and help improve it. Just create a branch with your name and make sure to update the README file to explain the changes you made and how the app would work after them. 
